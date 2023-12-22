@@ -6,6 +6,7 @@
     --lblue: #A4DFFF;
     --white: #FFFFFF;
     --black: #000000;
+    --contentHeight: calc(100% - 75px);
 }
 
 
@@ -42,7 +43,7 @@ body{
 
 .mainHolder{
     width: 100%;
-    height: calc(100% - 75px);
+    height: var(--contentHeight);
 
     background-color: var(--lblue);
 }
@@ -112,6 +113,11 @@ body{
     border: 0 !important;
 }
 
+.btn:hover{
+    background-color: var(--light) !important;
+    box-shadow:inset 0px 0px 0px 3px var(--dark) !important; /* https://stackoverflow.com/questions/9601357/placing-border-inside-of-div-and-not-on-its-edge */
+}
+
 .dropdown-menu{
     border-radius: 0% !important;
     background-color: var(--light) !important; 
@@ -143,3 +149,30 @@ body{
 .buttonHack{
     translate: 0 -200%;
 }
+
+.testContainer{
+    background-color: #1b130da9;
+    width: 100%;
+    height: var(--contentHeight);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.formContainer{
+    background-color: var(--light);
+    margin: auto;
+    width:75%;
+    border-radius: 25px;
+    box-shadow:inset 0px 0px 0px 10px var(--accent) !important; /* https://stackoverflow.com/questions/9601357/placing-border-inside-of-div-and-not-on-its-edge */
+}
+
+.formInput{
+    height: 75px;
+    width: 50%;
+}
+
+a:hover {
+    cursor:pointer;
+   }
