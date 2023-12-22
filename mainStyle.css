@@ -1,0 +1,145 @@
+/* fancy color variables */
+:root{
+    --accent: #F5CDAE;
+    --light: #FFEFDD;
+    --dark: #654f3e;
+    --lblue: #A4DFFF;
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+  }
+
+@media only screen and (min-width:992px) { /* medium breakpoint */
+    .container{
+        max-width: 50% !important;
+    }
+  }
+
+.fakehr{
+    height: 0.5vw;
+    background-color: var(--accent);
+}
+
+.siteHolder{
+    height: 100vh;
+}
+
+.sideBar{
+    width: 20%;
+    height: 100%;
+    background-color: var(--light);
+    border-right: 0.5vw solid var(--accent);
+}
+
+body{
+    overflow: hidden; /* sinful, but we use it to keep elements around the page*/
+}
+
+.mainHolder{
+    width: 100%;
+    height: calc(100% - 75px);
+
+    background-color: var(--lblue);
+}
+
+.postsContainer{
+    width: 50%;
+    height: 100%;
+    background-color: var(--light);
+    border-left: 10px solid var(--accent);
+    border-right: 10px solid var(--accent);
+    overflow-y: scroll;
+}
+
+.welcomeText{
+    font-size: 2.5vw;
+    line-height: 95%;
+    font-weight: bold;
+    color: var(--dark);
+    text-align: center;
+}
+
+.sidebarComponent{
+    height: 100%;
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+}
+
+.navbar{
+    position: sticky !important;
+    top: 0 !important;
+
+    border-bottom: 10px solid var(--accent);
+    background-color: var(--light);
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
+
+    height: 75px !important;
+}
+
+.navbar-brand{
+    color: var(--dark) !important;
+    font-size: 3vh !important;
+    margin-left: 1%;
+    font-weight: bold;
+}
+
+.nav-item{
+    color: var(--dark) !important;
+    transition: 0.3s;
+    z-index: 100;
+}
+
+.navglow:hover{
+    background-color: var(--accent);
+    border-radius: 25%;
+    box-shadow: 0px 0px 5px 5px var(--accent);
+}
+
+.searchBar{
+    height: 100%;
+    width: 100%;
+}
+
+.btn{
+    background-color: var(--accent) !important;
+    color: var(--dark) !important;
+    border: 0 !important;
+}
+
+.dropdown-menu{
+    border-radius: 0% !important;
+    background-color: var(--light) !important; 
+    border: 2px solid var(--dark) !important;
+}
+
+.dropdown-item:hover{
+    background-color: var(--accent) !important;
+}
+
+.postHolder{
+    background-color: var(--white);
+    width: 60%;
+    border: 2px solid var(--black);
+}
+
+.imagePreview{
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    object-fit: cover;
+    background-color: rgba(128, 128, 128, 0.205);
+}
+
+.pictureInfoHolder{
+    align-items: center;
+}
+
+.buttonHack{
+    translate: 0 -200%;
+}

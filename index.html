@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="mainStyle.css">
+</head>
+<body>
+    <div class="siteHolder">
+        <!-- navbar adapted from bootstrap docs example, including example dropdown -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">PetPix</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse me-auto" id="navbarNav">
+                <ul class="navbar-nav ms-auto">  
+                    <li class="nav-item px-2">
+                        <input class="searchBar my-auto" type="text" placeholder="Search Posts">
+                    </li>
+                    <li class="nav-item px-2 my-auto">
+                        <div class="dropdown">
+                            <button class="searchBar btn btn-secondary dropdown-toggle " type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Filter posts
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                              <button class="dropdown-item" type="button">funny filter</button>
+                            </div>
+                          </div>
+                    </li>
+                    <li class="nav-item px-2 navglow">
+                        <a class="nav-link active" aria-current="page" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item px-2 navglow">
+                        <a class="nav-link active" aria-current="page" href="#">Log Out</a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+        <div class="mainHolder">
+            <div class="container mx-auto postsContainer">
+
+                <br>
+                <div class="postHolder mx-auto">
+                    <div class="d-flex flex-row justify-content-between mt-2">
+                        <p class="mx-4"> funny cat</p>
+                        <p class="mx-4"> 21/12/2023</p>
+                    </div>
+
+                    <div class="w-100 d-flex">
+                        <img class="imagePreview" src="./front/assets/SweepSweepSweep.webp">
+                    </div>
+
+                    <div class="postContents">
+                        <div class="d-flex flex-column pictureInfoHolder">
+                            <h1> jinxy</h1>
+                            <p> Look at him go wowza!</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="w-100 d-flex justify-content-center aaa">
+            <button class="buttonHack">aaa</button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</body>
+</html>
