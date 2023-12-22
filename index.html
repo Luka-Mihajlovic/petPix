@@ -27,15 +27,33 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                               <button class="dropdown-item" type="button">funny filter</button>
+                              <hr class="dropdown-divider">
+                              <button class="dropdown-item" type="button">reset filter</button>
                             </div>
                           </div>
                     </li>
-                    <li class="nav-item px-2 navglow">
-                        <a class="nav-link active" aria-current="page" href="#">Profile</a>
-                    </li>
-                    <li class="nav-item px-2 navglow">
-                        <a class="nav-link active" aria-current="page" href="#">Log Out</a>
-                    </li>
+
+                    <!--Sectioning out so that I can easily apply d-none depending on user status-->
+                    
+                    <!--Profile controls-->
+                    <section class="px-2 d-flex flex-column flex-lg-row d-none">
+                        <li class="nav-item navglow">
+                            <a class="nav-link active" aria-current="page" href="#">Profile</a>
+                        </li>
+                        <li class="nav-item navglow">
+                            <a class="nav-link active" aria-current="page" href="#">Log Out</a>
+                        </li>
+                    </section>
+                    
+                    <!--No profile controls-->
+                    <section class="px-2 d-flex flex-column flex-lg-row">
+                        <li class="nav-item navglow">
+                            <a class="nav-link active" aria-current="page" href="#">Sign Up</a>
+                        </li>
+                        <li class="nav-item navglow">
+                            <a class="nav-link active" aria-current="page" href="#">Log In</a>
+                        </li>
+                    </section>                 
                 </ul>
               </div>
             </div>
@@ -43,7 +61,7 @@
 
         <div class="mainHolder">
             <div class="container mx-auto postsContainer">
-
+                <!-- template for posts -->
                 <br>
                 <div class="postHolder mx-auto">
                     <div class="d-flex flex-row justify-content-between mt-2">
@@ -67,7 +85,7 @@
         </div>
 
         <div class="w-100 d-flex justify-content-center aaa">
-            <button class="buttonHack">aaa</button>
+            <button class="buttonHack">new post button</button>
         </div>
     </div>
     

@@ -92,7 +92,7 @@ body{
 .nav-item{
     color: var(--dark) !important;
     transition: 0.3s;
-    z-index: 100;
+    background-color: var(--light);
 }
 
 .navglow:hover{
