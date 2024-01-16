@@ -1,0 +1,391 @@
+/* fancy color variables */
+:root{
+    --accent: #F5CDAE;
+    --light: #FFEFDD;
+    --dark: #654f3e;
+    --lblue: #A4DFFF;
+    --white: #FFFFFF;
+    --black: #000000;
+    --contentHeight: calc(100% - 75px);
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+  }
+
+@media only screen and (min-width:992px) { /* medium breakpoint */
+    .container{
+        max-width: 50% !important;
+    }
+}
+
+@media only screen and (max-width:576px) { /* medium breakpoint */
+    .postText{
+        font-size: small !important;
+    }
+}
+
+.fakehr{
+    height: 0.5%;
+    max-height: 0.5%;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background-color: var(--accent);
+}
+
+.siteHolder{
+    height: 100vh;
+}
+
+.sideBar{
+    width: 20%;
+    height: 100%;
+    background-color: var(--light);
+    border-right: 0.5vw solid var(--accent);
+}
+
+body{
+    overflow: hidden; /* sinful, but we use it to keep elements around the page*/
+}
+
+.mainHolder{
+    width: 100%;
+    height: var(--contentHeight);
+
+    background-color: var(--lblue);
+    background-image: url("./front/assets/pawOverlay.png");
+    background-repeat: repeat;
+    animation: scrolling 45s linear infinite;
+    animation-fill-mode: forwards;
+}
+
+@keyframes scrolling {
+	100% { background-position: 100% -100%; }
+}
+
+.postsContainer{
+    width: 50%;
+    height: 100%;
+    background-color: var(--light);
+    border-left: 10px solid var(--accent);
+    border-right: 10px solid var(--accent);
+    overflow-y: auto;
+}
+
+.welcomeText{
+    font-size: 2.5vw;
+    line-height: 95%;
+    font-weight: bold;
+    color: var(--dark);
+    text-align: center;
+}
+
+.sidebarComponent{
+    height: 100%;
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+}
+
+.navbar{
+    position: sticky !important;
+    top: 0 !important;
+
+    border-bottom: 10px solid var(--accent);
+    background-color: var(--light);
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
+
+    height: 75px !important;
+}
+
+.navbar-brand{
+    color: var(--dark) !important;
+    font-size: 3vh !important;
+    margin-left: 1%;
+    font-weight: bold;
+}
+
+.nav-item{
+    color: var(--dark) !important;
+    transition: 0.3s;
+    background-color: var(--light);
+}
+
+.navglow:hover{
+    background-color: var(--accent);
+    border-radius: 25%;
+    box-shadow: 0px 0px 5px 5px var(--accent);
+}
+
+.activeDropdown{
+    background-color: var(--accent) !important;
+} 
+
+.searchBar{
+    height: 100%;
+    width: 100%;
+}
+
+.btn{
+    background-color: var(--accent) !important;
+    color: var(--dark) !important;
+    border: 0 !important;
+}
+
+.btn:hover{
+    background-color: var(--light) !important;
+    box-shadow:inset 0px 0px 0px 3px var(--dark) !important; /* https://stackoverflow.com/questions/9601357/placing-border-inside-of-div-and-not-on-its-edge */
+}
+
+.dropdown-menu{
+    border-radius: 0% !important;
+    background-color: var(--light) !important; 
+    border: 2px solid var(--dark) !important;
+}
+
+.dropdown-item:hover{
+    background-color: var(--accent) !important;
+}
+
+.postHolder{
+    background-color: var(--white);
+    width: 60%;
+    border: 2px solid var(--black);
+}
+
+.imagePreview{
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    object-fit: cover;
+    background-color: rgba(128, 128, 128, 0.205);
+}
+
+.buttonHack{
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+    border-radius: 100%;
+    height: 6%;
+    aspect-ratio: 1/1;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+
+    background-color: var(--accent);
+    color: var(--dark);
+    font-weight: bolder;
+
+    font-size: xx-large;
+    
+    border: 2px solid var(--dark);
+}
+
+.buttonHack:hover{
+    background-color: var(--light);
+    border: 2px solid var(--accent);
+    transition: 0.2s;
+}
+
+.testContainer{
+    background-color: #1b130da9;
+    width: 100%;
+    height: var(--contentHeight);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height:100%;
+    z-index: 100;
+}
+
+.frontalContainer{
+    z-index: 101 !important;
+}
+
+.coolText{
+    text-decoration: underline;
+    transition: 0.1s;
+}
+.coolText:hover{
+    cursor: pointer;
+    color: var(--accent);
+}
+
+.testContainer h1{
+    color: var(--dark);
+    font-weight: bold;
+}
+
+.formContainer{
+    background-color: var(--light);
+    margin: auto;
+    width:75%;
+    border-radius: 25px;
+    box-shadow:inset 0px 0px 0px 10px var(--accent) !important; /* https://stackoverflow.com/questions/9601357/placing-border-inside-of-div-and-not-on-its-edge */
+}
+
+.formInput{
+    height: 75px;
+    width: 50%;
+    border: 1px solid var(--black);
+}
+
+a:hover {
+    cursor:pointer;
+   }
+
+.warningText{
+    font-weight: bold;
+    color: var(--dark);
+    text-align: center;
+    width:75%;
+}
+
+.fileInput{
+    white-space: nowrap;
+    overflow: hidden;
+    width: 50%;
+}
+
+.postPreview{
+    width: 30%;
+    max-height: 50%;
+    margin: auto;
+    object-fit: cover;
+    background-color: rgba(128, 128, 128, 0.205);
+    border: 5px solid var(--accent);
+}
+
+.postInfo{
+    background-color: var(--light);
+    width: 90%;
+    border: 10px solid var(--accent);
+    border-radius: 20px;
+    position: relative; /*for the X button positioning*/
+}
+
+.postText{
+    font-weight: bold;
+    color: var(--dark);
+    font-size: large;
+}
+
+.profileBig{
+    font-weight: bold;
+    color: var(--dark);
+    font-size: x-large;
+}
+
+.placeholderBlock{
+    height:95%; 
+    width:100%;
+}
+
+.petSupport{
+    width: 74%;
+}
+
+.profileBioContainer{
+    background-color: var(--white);
+    border: 1px solid var(--black);
+    text-decoration: underline;
+    border-radius: 10px;
+    height: 65%;
+}
+
+.postFullDesc{
+    background-color: white;
+    border-radius: 0px 0px 10px 10px;
+    border: 1px solid var(--black);
+    overflow-y: auto;
+    word-wrap:break-word;
+}
+
+.postImage{
+    width: 75%;
+    height: 75%;
+    margin: auto;
+    object-fit:contain;
+    background-color: rgba(128, 128, 128, 0.205);
+}
+
+.postInfoUtility{
+    height: 80%;
+}
+
+.exitButton{
+    height: 4%; 
+    aspect-ratio: 1/1;
+    position: absolute; 
+    margin: 5px;
+    
+    right: 0; 
+    top: 0;
+    border-radius: 100%;
+
+    background-color: var(--accent);
+    color: var(--dark);
+    font-weight: bolder;
+
+    text-align: center;
+    border: 2px solid var(--dark);
+
+    transition: 0.25s;
+}
+
+.exitButton:hover{
+    background-color: var(--light);
+    border: 2px solid var(--accent);
+    cursor: pointer;
+}
+
+.postDesc{
+    text-align: center;
+}
+
+.postViewTitle{
+    text-decoration: underline;
+    padding-left: 2%;
+}
+
+.petArea{
+    max-height: 75%;
+    overflow-y: auto;
+}
+
+.petPic{
+    background-color: var(--white);
+    border: 1px solid var(--black);
+    width: 90%;
+}
+
+.petPng{
+    object-fit: contain;
+    height: 60%;
+    width: 80%;
+    border: 1px solid var(--black);
+}
+
+.notifBubble{
+    z-index: 999;
+    position:absolute; 
+    left: 50%; 
+    top: -12%;
+
+    transform:translate(-50%);
+
+    border-radius: 10px;
+
+    background-color: var(--accent);
+    color: var(--dark);
+    font-weight: bolder;
+
+    text-align: center;
+    border: 2px solid var(--dark);
+
+    transition: 0.5s;
+}
