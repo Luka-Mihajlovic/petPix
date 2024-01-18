@@ -13,7 +13,6 @@ function previewPic () { // https://stackoverflow.com/questions/4459379/preview-
 
 async function fillPostTemplate (post) {
   const pContainer = document.getElementById('postsListing')
-
   for (let i = post.length - 1; i >= 0; i--) { // we go from the end ot the start because we're appending at the end
     const fUser = await axios.post('/findUserByKey',
       {

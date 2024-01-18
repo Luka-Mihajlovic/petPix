@@ -49,7 +49,7 @@ async function createAccount () {
       document.getElementById('nameRegisterWarn').classList.add('d-none')
     }
 
-    if (!(/'^(?=.*[^a-zA-Z:])(?=.*[a-zA-Z]).{8,}$'/.test(pass))) { // mix from https://regexr.com/3bfsi and online regex resources
+    if (!(/^(?=.*[^a-zA-Z:])(?=.*[a-zA-Z]).{8,}$/.test(pass))) { // mix from https://regexr.com/3bfsi and online regex resources
       document.getElementById('passRegisterWarn').classList.remove('d-none')
       passVerif = false
     } else {
