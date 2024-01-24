@@ -88,11 +88,13 @@ function destroyWindow (target) {
 }
 
 async function removePet (pid) { // eslint-disable-line no-unused-vars
-  console.warn('hayaa')
-  const loadedProfile = await axios.post('/findUserByKey', {
-    keyName: 'uid',
-    keyVal: localStorage.getItem('uId')
-  })
+  let loadedProfile
+  try {
+    loadedProfile = await axios.get('/findUserByKey?keyVal=' + localStorage.getItem('uId') + '&keyName=uid')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (loadedProfile.data.success) {
     let removed = false
@@ -103,7 +105,7 @@ async function removePet (pid) { // eslint-disable-line no-unused-vars
       }
     }
     if (removed) {
-      const newProfile = await axios.post('/editUser', {
+      const newProfile = await axios.put('/users', {
         targetId: localStorage.getItem('uId'),
         newUserObj: loadedProfile.data.userObj
       })
@@ -123,10 +125,13 @@ async function removePet (pid) { // eslint-disable-line no-unused-vars
 
 async function addNewPet () { // eslint-disable-line no-unused-vars
   // make new api request: post/editUser, where we edit a certain user by index (?)
-  const loadedProfile = await axios.post('/findUserByKey', {
-    keyName: 'uid',
-    keyVal: localStorage.getItem('uId')
-  })
+  let loadedProfile
+  try {
+    loadedProfile = await axios.get('/findUserByKey?keyVal=' + localStorage.getItem('uId') + '&keyName=uid')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (loadedProfile.data.success) {
     const id4 = await axios.get('/id') // invoke UUID4 on the client to get an ID for the pet. This isn't too secure, but we don't need security for pet data tbh
@@ -137,7 +142,7 @@ async function addNewPet () { // eslint-disable-line no-unused-vars
         petId: id4.data.idNumber
       })
 
-      const newProfile = await axios.post('/editUser', {
+      const newProfile = await axios.put('/users', {
         targetId: localStorage.getItem('uId'),
         newUserObj: loadedProfile.data.userObj
       })
@@ -166,10 +171,13 @@ function addPetTemplate () {
 }
 
 async function loadProfileInfo (targetId) {
-  const loadedProfile = await axios.post('/findUserByKey', {
-    keyName: 'uid',
-    keyVal: targetId
-  })
+  let loadedProfile
+  try {
+    loadedProfile = await axios.get('/findUserByKey?keyVal=' + targetId + '&keyName=uid')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (loadedProfile.data.foundUser && loadedProfile.data.success) {
     document.getElementById('profileName').innerHTML = loadedProfile.data.userObj.username
@@ -186,7 +194,19 @@ async function loadProfileInfo (targetId) {
     document.getElementById('profileBio').readOnly = true
 
     if (loadedProfile.data.userObj.pets.length === 0) { // check the pet amount of the user, then add the required template
-      document.getElementById('fullPetArea').insertAdjacentHTML('beforeend', noPetTemplate)
+      if (isOwner) {
+        document.getElementById('fullPetArea').insertAdjacentHTML('beforeend', noPetTemplate)
+      } else {
+        document.getElementById('fullPetArea').insertAdjacentHTML('beforeend',
+        `
+        <section id="noPetStuff">
+            <div class="w-100 d-flex">
+                <span class="profileBig mx-auto">No pets here...</span>
+            </div>
+        </section>
+        `
+        )
+      }
     } else {
       for (let i = 0; i < loadedProfile.data.userObj.pets.length; i++) {
         document.getElementById('fullPetArea').insertAdjacentHTML('beforeend',
@@ -244,13 +264,17 @@ async function loadProfileInfo (targetId) {
 }
 
 async function submitNewBio () {
-  const loadedProfile = await axios.post('/findUserByKey', {
-    keyName: 'uid',
-    keyVal: localStorage.getItem('uId')
-  })
+  let loadedProfile
+  try {
+    loadedProfile = await axios.get('/findUserByKey?keyVal=' + localStorage.getItem('uId') + '&keyName=uid')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
+
   if (loadedProfile.data.success) {
     loadedProfile.data.userObj.bio = document.getElementById('profileBio').value
-    const newProfile = await axios.post('/editUser', {
+    const newProfile = await axios.put('/users', {
       targetId: localStorage.getItem('uId'),
       newUserObj: loadedProfile.data.userObj
     })
@@ -269,11 +293,13 @@ async function changePWRequest () { // eslint-disable-line no-unused-vars
   const newPass = document.getElementById('newPWChange').value
   const confirmation = document.getElementById('PWConfirm').value
 
-  const fUser = await axios.post('/findUserByKeys',
-    {
-      keyVal: [localStorage.getItem('uId'), oldPass],
-      keyName: ['uid', 'password']
-    })
+  let fUser
+  try {
+    fUser = await axios.get('/findUserByKeys/?keyVal=["' + localStorage.getItem('uId') + '","' + oldPass + '"]&keyName=["uid","password"]')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (fUser.data.success) {
     if (fUser.data.foundUser) {
@@ -297,7 +323,7 @@ async function changePWRequest () { // eslint-disable-line no-unused-vars
       if (passesAll) {
         fUser.data.userObj.password = newPass
 
-        const newProfile = await axios.post('/editUser', {
+        const newProfile = await axios.put('/users', {
           targetId: localStorage.getItem('uId'),
           newUserObj: fUser.data.userObj
         })
@@ -339,17 +365,20 @@ function changePass () {
 }
 
 async function initiateDelete (userObj) {
-  const allPosts = await axios.get('/posts')
+  let allPosts
+  try {
+    allPosts = await axios.get('/posts')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
+
   const sender = localStorage.getItem('uId')
   let delSuccess = true
 
   for (let i = 0; i < allPosts.data.postslist.posts.length; i++) {
     if (allPosts.data.postslist.posts[i].posterId === sender) {
-      const delpost = await axios.post('/delPost',
-        {
-          sentBy: sender,
-          targetId: allPosts.data.postslist.posts[i].pid
-        })
+      const delpost = await axios.delete('/posts/?sentBy=' + sender + '&targetId=' + allPosts.data.postslist.posts[i].pid)
       if (delpost.data.success === false) {
         popUp('Error deleting posts.', 3)
         delSuccess = false
@@ -359,11 +388,7 @@ async function initiateDelete (userObj) {
   }
 
   if (delSuccess) {
-    const deletedUser = await axios.post('/delUser',
-      {
-        sentBy: sender,
-        targetId: sender
-      })
+    const deletedUser = await axios.delete('/users/?sentBy=' + sender + '&targetId=' + sender)
     if (deletedUser.data.success) {
       destroyWindow('delAccountHolder')
       destroyWindow('profileHolder')
@@ -382,11 +407,13 @@ async function delAccRequest () { // eslint-disable-line no-unused-vars
 
   if (pass === confirmPass) {
     document.getElementById('matchDelWarn').classList.add('d-none')
-    const fUser = await axios.post('/findUserByKeys',
-      {
-        keyVal: [localStorage.getItem('uId'), pass],
-        keyName: ['uid', 'password']
-      })
+    let fUser
+    try {
+      fUser = await axios.get('/findUserByKeys/?keyVal=["' + localStorage.getItem('uId') + '","' + pass + '"]&keyName=["uid","password"]')
+    } catch (err) {
+      popUp('Error connecting with database, try again.')
+      console.warn('Server error: ' + err)
+    }
 
     if (fUser.data.success) {
       if (fUser.data.foundUser) {

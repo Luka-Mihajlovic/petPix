@@ -1,6 +1,7 @@
 const fs = require('fs')
 // for account creation
 const { v4: uuidv4 } = require('uuid') // from UUID docs @ https://www.npmjs.com/package/uuid
+const path = require('path')
 
 function getid (req, resp) {
   try {
@@ -11,7 +12,7 @@ function getid (req, resp) {
       idNumber: randId
     })
   } catch (err) {
-    //it's impossible to get to the catch error, since it would most likely be caused by the server shutting down right when a request is sent
+    // it's impossible to get to the catch error, since it would most likely be caused by the server shutting down right when a request is sent
     /* istanbul ignore next */
     resp.statusCode = 400
     /* istanbul ignore next */
@@ -25,7 +26,7 @@ function getid (req, resp) {
 function createPost (req, resp) {
   try {
     // general idea from https://stackoverflow.com/questions/53054756/javascript-appending-object-to-json-file
-    const allPosts = fs.readFileSync('./client/db/posts.json')
+    const allPosts = fs.readFileSync(path.resolve('./client/db/posts.json'))
     const postJson = (JSON.parse(allPosts))
     const postId = uuidv4()
 
@@ -43,9 +44,9 @@ function createPost (req, resp) {
       pTags: req.body.postTags,
       imageName: req.file.filename
     })
-    //we will never get here during jest tests, we do not mock file inputs
+    // we will never get here during jest tests, we do not mock file inputs
     /* istanbul ignore next */
-    fs.writeFileSync('./client/db/posts.json', JSON.stringify(postJson))
+    fs.writeFileSync(path.resolve('./client/db/posts.json'), JSON.stringify(postJson))
     resp.statusCode = 200
     resp.json({
       success: true
@@ -62,7 +63,7 @@ function createPost (req, resp) {
 function editPost (req, resp) {
   try {
     // general idea from https://stackoverflow.com/questions/53054756/javascript-appending-object-to-json-file
-    const allPosts = fs.readFileSync('./client/db/posts.json')
+    const allPosts = fs.readFileSync(path.resolve('./client/db/posts.json'))
     const postJson = (JSON.parse(allPosts))
 
     for (let i = 0; i < postJson.posts.length; i++) {
@@ -74,7 +75,7 @@ function editPost (req, resp) {
       }
     }
 
-    fs.writeFileSync('./client/db/posts.json', JSON.stringify(postJson))
+    fs.writeFileSync(path.resolve('./client/db/posts.json'), JSON.stringify(postJson))
 
     resp.statusCode = 200
     resp.json({
@@ -91,14 +92,23 @@ function editPost (req, resp) {
 
 function findUserByKey (req, resp) {
   try {
-    let userStatus = false
-    const allUsers = fs.readFileSync('./client/db/users.json')
-    const userJson = (JSON.parse(allUsers))
+    if (req.query.keyVal === null || req.query.keyName === null || req.query.keyVal === '' || req.query.keyName === '') {
+      resp.statusCode = 404
+      resp.json({
+        success: false,
+        errorMessage: 'Malformed query in request'
+      })
+      return
+    }
 
+    let userStatus = false
+    const allUsers = fs.readFileSync(path.resolve('./client/db/users.json'))
+
+    const userJson = (JSON.parse(allUsers))
     let userIndex = -1
 
     for (let i = 0; i < userJson.users.length; i++) {
-      if (req.body.keyVal === userJson.users[i][req.body.keyName]) {
+      if (req.query.keyVal === userJson.users[i][req.query.keyName]) {
         userStatus = true
         userIndex = i
         break
@@ -130,9 +140,30 @@ function findUserByKey (req, resp) {
 }
 
 function findUserByKeys (req, resp) {
+  let keyNames
+  let keyVals
   try {
+    keyNames = JSON.parse(req.query.keyName)
+    keyVals = JSON.parse(req.query.keyVal)
+  } catch (err) {
+    resp.statusCode = 400
+    resp.json({
+      success: false,
+      errorMessage: 'Failed parsing query in request'
+    })
+    return
+  }
+  try {
+    if (req.query.keyVal === null || req.query.keyName === null || req.query.keyVal === '' || req.query.keyName === '') {
+      resp.statusCode = 404
+      resp.json({
+        success: false,
+        errorMessage: 'Malformed query in request'
+      })
+      return
+    }
     let userStatus = false
-    const allUsers = fs.readFileSync('./client/db/users.json')
+    const allUsers = fs.readFileSync(path.resolve('./client/db/users.json'))
     const userJson = (JSON.parse(allUsers))
 
     let userIndex = -1
@@ -140,12 +171,12 @@ function findUserByKeys (req, resp) {
 
     for (let i = 0; i < userJson.users.length; i++) { // loop every user
       counter = 0
-      for (let j = 0; j < req.body.keyName.length; j++) { // once you reach a user, check if all keys match
-        if (req.body.keyVal[j] === userJson.users[i][req.body.keyName[j]]) {
+      for (let j = 0; j < keyNames.length; j++) { // once you reach a user, check if all keys match
+        if (keyVals[j] === userJson.users[i][keyNames[j]]) {
           counter++
         }
       }
-      if (counter === req.body.keyName.length) {
+      if (counter === keyNames.length) {
         userIndex = i
         userStatus = true
       }
@@ -178,7 +209,7 @@ function findUserByKeys (req, resp) {
 function createUser (req, resp) {
   try {
     // general idea from https://stackoverflow.com/questions/53054756/javascript-appending-object-to-json-file
-    const allUsers = fs.readFileSync('./client/db/users.json')
+    const allUsers = fs.readFileSync(path.resolve('./client/db/users.json'))
     const userJson = (JSON.parse(allUsers))
     const userId = uuidv4()
 
@@ -191,7 +222,7 @@ function createUser (req, resp) {
       isAdmin: false
     })
 
-    fs.writeFileSync('./client/db/users.json', JSON.stringify(userJson))
+    fs.writeFileSync(path.resolve('./client/db/users.json'), JSON.stringify(userJson))
     resp.statusCode = 200
     resp.json({
       success: true,
@@ -208,7 +239,7 @@ function createUser (req, resp) {
 
 function getPosts (req, resp) {
   try {
-    const postsJson = JSON.parse(fs.readFileSync('./client/db/posts.json'))
+    const postsJson = JSON.parse(fs.readFileSync(path.resolve('./client/db/posts.json')))
     resp.statusCode = 200
     resp.json({
       success: true,
@@ -223,11 +254,11 @@ function getPosts (req, resp) {
   }
 }
 
-//we cannot consistently test for an existing post, so we cannot test this
+// we cannot consistently test for an existing post, so we cannot test this
 /* istanbul ignore next */
-function findPost (req) {
+function findPost (kN, kV) {
   let postStatus = false
-  const allPosts = fs.readFileSync('./client/db/posts.json')
+  const allPosts = fs.readFileSync(path.resolve('./client/db/posts.json'))
   const postJson = (JSON.parse(allPosts))
 
   let postIndex = 0
@@ -235,12 +266,12 @@ function findPost (req) {
   let counter
   for (let i = 0; i < postJson.posts.length; i++) { // loop every post
     counter = 0
-    for (let j = 0; j < req.body.keyName.length; j++) { // once you reach a post, check if all keys match
-      if (req.body.keyVal[j] === postJson.posts[i][req.body.keyName[j]]) {
+    for (let j = 0; j < kN.length; j++) { // once you reach a post, check if all keys match
+      if (kV[j] === postJson.posts[i][kN[j]]) {
         counter++
       }
     }
-    if (counter === req.body.keyName.length) {
+    if (counter === kN.length) {
       postIndex = i
       postStatus = true
     }
@@ -249,9 +280,30 @@ function findPost (req) {
 }
 
 function findPostByKeys (req, resp) {
+  let keyNames
+  let keyVals
   try {
-    const foundArr = findPost(req) // 0 = status, 1 = json, 2 = index
-    
+    keyNames = JSON.parse(req.query.keyName)
+    keyVals = JSON.parse(req.query.keyVal)
+  } catch (err) {
+    resp.statusCode = 400
+    resp.json({
+      success: false,
+      errorMessage: 'Failed parsing query in request'
+    })
+    return
+  }
+  try {
+    if (req.query.keyVal === null || req.query.keyName === null || req.query.keyVal === '' || req.query.keyName === '') {
+      resp.statusCode = 404
+      resp.json({
+        success: false,
+        errorMessage: 'Malformed query in request'
+      })
+      return
+    }
+    const foundArr = findPost(keyNames, keyVals) // 0 = status, 1 = json, 2 = index
+
     if (foundArr[0]) {
       resp.statusCode = 200
       resp.json({
@@ -278,11 +330,19 @@ function findPostByKeys (req, resp) {
 
 function deletePost (req, resp) {
   try {
+    if (req.query.sentBy === null || req.query.targetId === null || req.query.sentBy === '' || req.query.targetId === '') {
+      resp.statusCode = 404
+      resp.json({
+        success: false,
+        errorMessage: 'Malformed query in request'
+      })
+      return
+    }
     // we convert our single request parameter, targetId into a suitable json for the findPost function, just to reuse a bit of code
-    const foundArr = (findPost({ body: { keyName: ['pid'], keyVal: [req.body.targetId] } })) // 0 = status, 1 = json, 2 = index
+    const foundArr = (findPost(['pid'], [req.query.targetId])) // 0 = status, 1 = json, 2 = index
 
-    if (req.body.sentBy === foundArr[1].posts[foundArr[2]].posterId) { // authenticate
-      //when testing, we will never be able to delete a post
+    if (req.query.sentBy === foundArr[1].posts[foundArr[2]].posterId) { // authenticate
+      // when testing, we will never be able to delete a post
       /* istanbul ignore next */
       if (foundArr[0]) { // if a post has been found, our post file path is fine so we re-open the file:
         const postJson = foundArr[1]
@@ -294,18 +354,16 @@ function deletePost (req, resp) {
           fs.unlinkSync(imgPath)
           postJson.posts.splice(foundArr[2], 1) // remove the data from the array, image is also unlinked/deleted
         }
-        fs.writeFileSync('./client/db/posts.json', JSON.stringify(postJson))
+        fs.writeFileSync(path.resolve('./client/db/posts.json'), JSON.stringify(postJson))
 
         resp.statusCode = 200
         resp.json({
           success: true
         })
       } else {
-        // resp.statusCode = 404;
+        resp.statusCode = 200
         resp.json({
-          success: true,
-          foundPost: false,
-          postObj: null
+          success: false
         })
       }
     } else {
@@ -326,19 +384,36 @@ function deletePost (req, resp) {
 
 function deleteUser (req, resp) {
   try {
-    const allUsers = fs.readFileSync('./client/db/users.json')
+    if (req.query.sentBy === null || req.query.targetId === null || req.query.sentBy === '' || req.query.targetId === '') {
+      resp.statusCode = 404
+      resp.json({
+        success: false,
+        errorMessage: 'Malformed query in request'
+      })
+      return
+    }
+    const allUsers = fs.readFileSync(path.resolve('./client/db/users.json'))
     const userJson = (JSON.parse(allUsers))
 
     let userIndex = -1
+
     for (let i = 0; i < userJson.users.length; i++) {
-      if (req.body.targetId === userJson.users[i].uid && req.body.targetId === req.body.sentBy) { // security woo, see if the target matches who sent it id-wise
+      if (req.query.targetId === userJson.users[i].uid && req.query.targetId === req.query.sentBy) { // security woo, see if the target matches who sent it id-wise
         userIndex = i
         break
       }
     }
 
+    if (userIndex === -1) {
+      resp.statusCode = 200
+      resp.json({
+        success: false
+      })
+      return
+    }
+
     userJson.users.splice(userIndex, 1)
-    fs.writeFileSync('./client/db/users.json', JSON.stringify(userJson))
+    fs.writeFileSync(path.resolve('./client/db/users.json'), JSON.stringify(userJson))
 
     resp.statusCode = 200
     resp.json({
@@ -355,7 +430,7 @@ function deleteUser (req, resp) {
 
 function editUser (req, resp) {
   try {
-    const allUsers = fs.readFileSync('./client/db/users.json')
+    const allUsers = fs.readFileSync(path.resolve('./client/db/users.json'))
     const userJson = (JSON.parse(allUsers))
 
     let userIndex = -1
@@ -369,14 +444,14 @@ function editUser (req, resp) {
 
     userJson.users[userIndex] = req.body.newUserObj // override the record
 
-    fs.writeFileSync('./client/db/users.json', JSON.stringify(userJson))
+    fs.writeFileSync(path.resolve('./client/db/users.json'), JSON.stringify(userJson))
 
     resp.statusCode = 200
     resp.json({
       success: true
     })
   } catch (err) {
-    //it's impossible to get to the catch error, since it would most likely be caused by the server shutting down right when a request is sent
+    // it's impossible to get to the catch error, since it would most likely be caused by the server shutting down right when a request is sent
     /* istanbul ignore next */
     resp.statusCode = 400
     /* istanbul ignore next */

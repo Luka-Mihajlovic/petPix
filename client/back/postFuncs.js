@@ -14,11 +14,13 @@ function previewPic () { // https://stackoverflow.com/questions/4459379/preview-
 async function fillPostTemplate (post) {
   const pContainer = document.getElementById('postsListing')
   for (let i = post.length - 1; i >= 0; i--) { // we go from the end ot the start because we're appending at the end
-    const fUser = await axios.post('/findUserByKey',
-      {
-        keyVal: post[i].posterId,
-        keyName: 'uid'
-      })
+    let fUser
+    try {
+      fUser = await axios.get('/findUserByKey?keyVal=' + post[i].posterId + '&keyName=uid')
+    } catch (err) {
+      popUp('Error connecting with database, try again.')
+      console.warn('Server error: ' + err)
+    }
 
     if (fUser.data.success) {
       if (fUser.data.foundUser) { // did we even find anyone
@@ -63,20 +65,18 @@ async function fillPostTemplate (post) {
 }
 
 async function loadPostView (clickTarget) { // eslint-disable-line no-unused-vars
-  const gotPost = await axios.post('/findPostByKeys',
-    {
-      keyVal: [clickTarget.id],
-      keyName: ['pid']
-    })
+  let gotPost
+  try {
+    gotPost = await axios.get('/findPostByKeys?keyVal=["' + clickTarget.id + '"]&keyName=["pid"]')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (gotPost.data.success) {
     const postToFill = gotPost.data.postObj
 
-    const gotUser = await axios.post('/findUserByKey',
-      {
-        keyVal: postToFill.posterId,
-        keyName: 'uid'
-      })
+    const gotUser = await axios.get('/findUserByKey?keyVal=' + postToFill.posterId + '&keyName=uid')
 
     if (gotUser.data.success) {
       const delBut = document.getElementById('delPostButton')
@@ -106,11 +106,7 @@ async function loadPostView (clickTarget) { // eslint-disable-line no-unused-var
         document.getElementById('postControlsHolder').insertAdjacentHTML('beforeend', delButton)
 
         document.getElementById('delPostButton').addEventListener('click', async function () {
-          const delpost = await axios.post('/delPost',
-            {
-              sentBy: localStorage.getItem('uId'),
-              targetId: postToFill.pid
-            })
+          const delpost = await axios.delete('/posts/?sentBy=' + localStorage.getItem('uId') + '&targetId=' + postToFill.pid)
           if (delpost.data.success) {
             popUp('Deleted post successfully!', 3)
             toggleGreyOut()
@@ -205,7 +201,13 @@ async function loadPosts (override = null) {
   let sortedArr
   let pData
   if (override === null) {
-    pData = await axios.get('/posts')
+    try {
+      pData = await axios.get('/posts')
+    } catch (err) {
+      popUp('Error connecting with database, try again.')
+      console.warn('Server error: ' + err)
+    }
+
     if (pData.data.success) {
       sortedArr = applyFilters(pData.data.postslist.posts)
     } else {
@@ -258,11 +260,17 @@ async function createPost () {
 
   console.warn(fData)
 
-  const createdPost = await axios.post('/createpost', fData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
+  let createdPost
+  try {
+    createdPost = await axios.post('/posts', fData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (createdPost.data.success) {
     toggleGreyOut()
@@ -277,19 +285,20 @@ async function addRemoveLike () {
   const likerId = localStorage.getItem('uId')
 
   // add like count to posts
-
-  const gotPost = await axios.post('/findPostByKeys',
-    {
-      keyVal: [document.getElementById('postInfoHolder').getAttribute('viewingId')],
-      keyName: ['pid']
-    })
+  let gotPost
+  try {
+    gotPost = await axios.get('/findPostByKeys?keyVal=["' + document.getElementById('postInfoHolder').getAttribute('viewingId') + '"]&keyName=["pid"]')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (gotPost.data.success) {
     if (gotPost.data.postObj.likedBy.includes(likerId)) { // if it's already liked, lets remove
       document.getElementById('likePost').innerHTML = 'LIKE POST'
-      gotPost.data.postObj.likedBy.pop(gotPost.data.postObj.likedBy.indexOf(likerId)) // pop the element where uId appears
+      gotPost.data.postObj.likedBy.splice(gotPost.data.postObj.likedBy.indexOf(likerId), 1) // pop the element where uId appears
 
-      const editedPost = await axios.post('/editPost', {
+      const editedPost = await axios.put('/posts', {
         targetPost: document.getElementById('postInfoHolder').getAttribute('viewingId'),
         keyName: ['likedBy', 'likes'],
         newValue: [gotPost.data.postObj.likedBy, (gotPost.data.postObj.likes - 1)]
@@ -302,7 +311,7 @@ async function addRemoveLike () {
     } else {
       document.getElementById('likePost').innerHTML = 'UNLIKE POST'
       gotPost.data.postObj.likedBy.push(likerId)
-      const editedPost = await axios.post('/editPost', {
+      const editedPost = await axios.put('/posts', {
         targetPost: document.getElementById('postInfoHolder').getAttribute('viewingId'),
         keyName: ['likedBy', 'likes'],
         newValue: [gotPost.data.postObj.likedBy, (gotPost.data.postObj.likes + 1)]
@@ -321,11 +330,13 @@ async function addRemoveLike () {
 async function showPostBy () {
   const postId = document.getElementById('postInfoHolder').getAttribute('viewingid')
   if (postId !== null) {
-    const gotPost = await axios.post('/findPostByKeys',
-      {
-        keyVal: [postId],
-        keyName: ['pid']
-      })
+    let gotPost
+    try {
+      gotPost = await axios.get('/findPostByKeys?keyVal=["' + postId + '"]&keyName=["pid"]')
+    } catch (err) {
+      popUp('Error connecting with database, try again.')
+      console.warn('Server error: ' + err)
+    }
 
     if (gotPost.data.success) {
       if (loadProfileInfo(gotPost.data.postObj.posterId)) {

@@ -34,12 +34,13 @@ async function createAccount () {
   const passConfirm = document.getElementById('passConfirm').value
 
   let passVerif = true
-
-  const fUser = await axios.post('/findUserByKey',
-    {
-      keyVal: uName,
-      keyName: 'username'
-    })
+  let fUser
+  try {
+    fUser = await axios.get('/findUserByKey?keyVal=' + uName + '&keyName=username')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   if (fUser.data.success) {
     if (fUser.data.foundUser || uName.length < 3 || uName.length > 20) {
@@ -63,11 +64,17 @@ async function createAccount () {
       document.getElementById('repeatRegisterWarn').classList.add('d-none')
     }
 
+    let postedUser
     if (passVerif) {
-      const postedUser = await axios.post('/createUser', {
-        uname: uName,
-        passw: pass
-      })
+      try {
+        postedUser = await axios.post('/users', {
+          uname: uName,
+          passw: pass
+        })
+      } catch (err) {
+        popUp('Error connecting with database, try again.')
+        console.warn('Server error: ' + err)
+      }
       if (!postedUser.data.success) {
         popUp()
       } else {
@@ -83,12 +90,13 @@ async function createAccount () {
 async function logIntoAccount () {
   const uName = document.getElementById('nameLogin').value
   const pass = document.getElementById('passLogin').value
-
-  const fUser = await axios.post('/findUserByKeys',
-    {
-      keyVal: [uName, pass],
-      keyName: ['username', 'password']
-    })
+  let fUser
+  try {
+    fUser = await axios.get('/findUserByKeys/?keyVal=["' + uName + '","' + pass + '"]&keyName=["username","password"]')
+  } catch (err) {
+    popUp('Error connecting with database, try again.')
+    console.warn('Server error: ' + err)
+  }
 
   console.log(fUser.data)
 

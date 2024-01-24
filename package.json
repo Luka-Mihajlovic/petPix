@@ -10,7 +10,8 @@
   "description": "Progblack project Mihajlovic",
   "main": "server.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --coverage --silent=false"
+    "test": "jest --detectOpenHandles --coverage --silent=false",
+    "pretest": "eslint .\\"
   },
   "author": "Luka Mihajlovic",
   "license": "ISC",
